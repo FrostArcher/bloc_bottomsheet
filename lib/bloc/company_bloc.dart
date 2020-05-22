@@ -19,8 +19,11 @@ class CompanyBloc extends Bloc<CompanyEvent, CompanyState>{
       yield CompanyLoading();
       try{
         final CompanyDetails companyDetails = await companyRepository.getCompanyDetails(event.id);
-        if(companyDetails.id!=null){
+        if(companyDetails !=null){
           yield CompanyLoaded(companyDetails: companyDetails);
+        }
+        else{
+          yield CompanyEmpty();
         }
       }catch (_){
         yield CompanyError();

@@ -275,6 +275,11 @@ class Home extends StatelessWidget {
                   ],
                 );
               }
+              if (state is CompanyError) {
+                return Center(
+                  child: Text("Must Search by Id"),
+                );
+              }
             }),
           )
         ],

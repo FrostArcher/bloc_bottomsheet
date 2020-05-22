@@ -66,6 +66,8 @@ class CompanyDetails extends Equatable {
     );
   }
 
-
-
+  @override
+  String toString() {
+    return 'CompanyDetails{id: $id, user: $user, name: $name, address: $address, email: $email, latitude: $latitude, longitude: $longitude, dealer_image: $dealer_image, avg_rating: $avg_rating, phone: $phone, following: $following, reviews: $reviews, isFollowing: $isFollowing}';
+  }
 }

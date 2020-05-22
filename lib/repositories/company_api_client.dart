@@ -17,12 +17,17 @@ class CompanyDetailsApiClient {
     if(response.statusCode != 200){
       throw Exception('error getting company details');
     }
-    final responseJson = jsonDecode(response.body);
-    var companyDetails = CompanyDetails.fromJson(responseJson);
-    return companyDetails;
+    try {
+      final responseJson = jsonDecode(response.body);
+      var companyDetails = CompanyDetails.fromJson(responseJson);
+      if(companyDetails.id==null){
+        return null;
+      }
+      return companyDetails;
+    }catch(e){
+      print("$e");
+    }
   }
-
-
 }
 
 
