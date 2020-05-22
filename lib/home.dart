@@ -68,13 +68,13 @@ class Home extends StatelessWidget {
                           Container(
                             width: 100,
                             height: 100,
-                            child: ClipRRect(child: Image.network("${companyDetails.dealer_image}")),
+                            child: ClipRRect(child: Image.network("${companyDetails.dealer_image??"https://images.unsplash.com/photo-1521120098171-0400b4ec1319?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=751&q=80"}")),
                           ),
 
                           Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Text(
-                              "${companyDetails.name}",
+                              "${companyDetails.name??"No Name Found"}",
                               textScaleFactor: 1.5,
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
@@ -117,7 +117,7 @@ class Home extends StatelessWidget {
                           ),
                           Expanded(
                             child: Text(
-                              "+917003188891",
+                              "${companyDetails.phone}",
                               style: TextStyle(color: Colors.black38),
                             ),
                           ),
@@ -135,7 +135,7 @@ class Home extends StatelessWidget {
                           ),
                           Expanded(
                             child: Text(
-                              "k.gorain007@gmail.com",
+                              "${companyDetails.email}",
                               style: TextStyle(color: Colors.black38),
                             ),
                           ),
@@ -153,7 +153,7 @@ class Home extends StatelessWidget {
                           ),
                           Expanded(
                             child: Text(
-                              "Address",
+                              "${companyDetails.address}",
                               maxLines: 5,
                               style: TextStyle(color: Colors.black38),
                             ),
@@ -182,11 +182,11 @@ class Home extends StatelessWidget {
                                     Row(
                                       children: [1,2,3,4,5].map((e) => Icon(Icons.star, size: 10,)).toList(),
                                     ),
-                                    Text("4.5",
+                                    Text("${companyDetails.avg_rating}",
                                     textScaleFactor: 2,
                                       style: TextStyle(fontWeight: FontWeight.bold),
                                     ),
-                                    Text("343 votes",
+                                    Text("${companyDetails.reviews} votes",
                                     style: TextStyle(
                                       color: Colors.black38,
                                     ),
@@ -202,15 +202,22 @@ class Home extends StatelessWidget {
                         ],
                       ),
                     ),
-                    RaisedButton(
-                      onPressed: (){},
-                      color: Colors.deepPurple,
-                      padding: EdgeInsets.all(10),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30),
-                      ),
-                      textColor: Colors.white,
-                      child: Text("Add Review"),
+                    Row(
+                      children: [
+                        Flexible(
+                          flex:1,
+                          child: RaisedButton(
+                            onPressed: (){},
+                            color: Colors.deepPurple,
+                            padding: EdgeInsets.all(10),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(30),
+                            ),
+                            textColor: Colors.white,
+                            child: Text("Add Review"),
+                          ),
+                        ),
+                      ],
                     ),
                     SizedBox(
                       height: 30,
@@ -275,7 +282,7 @@ class Home extends StatelessWidget {
                   ],
                 );
               }
-              if (state is CompanyError) {
+              else {
                 return Center(
                   child: Text("Must Search by Id"),
                 );

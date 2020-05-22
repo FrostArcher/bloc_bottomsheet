@@ -14,6 +14,7 @@ class CompanyDetails extends Equatable {
   final int following;
   final int reviews;
   final bool isFollowing;
+  final RatingCount ratingCount;
 
   const CompanyDetails(
       {this.id,
@@ -28,6 +29,7 @@ class CompanyDetails extends Equatable {
       this.phone,
       this.following,
       this.reviews,
+        this.ratingCount,
       this.isFollowing});
 
   @override
@@ -46,6 +48,7 @@ class CompanyDetails extends Equatable {
     following,
     reviews,
     isFollowing,
+    ratingCount,
   ];
 
   factory CompanyDetails.fromJson(Map<String, dynamic> str){
@@ -63,11 +66,37 @@ class CompanyDetails extends Equatable {
       following: str["following"],
       reviews: str["reviews"],
       isFollowing: str["isFollowing"],
+      ratingCount: RatingCount.fromJson(str["rating_count"])
     );
   }
 
   @override
   String toString() {
-    return 'CompanyDetails{id: $id, user: $user, name: $name, address: $address, email: $email, latitude: $latitude, longitude: $longitude, dealer_image: $dealer_image, avg_rating: $avg_rating, phone: $phone, following: $following, reviews: $reviews, isFollowing: $isFollowing}';
+    return 'CompanyDetails{id: $id, user: $user, name: $name, address: $address, email: $email, latitude: $latitude, longitude: $longitude, dealer_image: $dealer_image, avg_rating: $avg_rating, phone: $phone, following: $following, reviews: $reviews, isFollowing: $isFollowing, ratingCount: $ratingCount}';
+  }
+}
+
+class RatingCount{
+  final int oneStar;
+  final int twoStar;
+  final int threeStar;
+  final int fourStar;
+  final int fiveStar;
+
+  const RatingCount({this.oneStar, this.twoStar, this.threeStar, this.fourStar, this.fiveStar});
+
+  factory RatingCount.fromJson(Map<String, dynamic> str){
+    return RatingCount(
+      oneStar: str["1"],
+      twoStar: str["2"],
+      threeStar: str["3"],
+      fourStar: str["4"],
+      fiveStar: str["5"],
+    );
+  }
+
+  @override
+  String toString() {
+    return 'RatingCount{oneStar: $oneStar, twoStar: $twoStar, threeStar: $threeStar, fourStar: $fourStar, fiveStar: $fiveStar}';
   }
 }

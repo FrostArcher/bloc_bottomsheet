@@ -23,6 +23,7 @@ class CompanyDetailsApiClient {
       if(companyDetails.id==null){
         return null;
       }
+      print("${companyDetails.toString()}");
       return companyDetails;
     }catch(e){
       print("$e");
