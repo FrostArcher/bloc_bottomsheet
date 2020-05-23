@@ -15,8 +15,14 @@ class CompanyDetails extends Equatable {
   final int reviews;
   final bool isFollowing;
   final RatingCount ratingCount;
+  int _roundRating;
+  List<int> _stars=[];
+  List _starCount=[];
+  List _starclicked=[];
 
-  const CompanyDetails(
+
+
+  CompanyDetails(
       {this.id,
       this.user,
       this.name,
@@ -30,7 +36,10 @@ class CompanyDetails extends Equatable {
       this.following,
       this.reviews,
         this.ratingCount,
-      this.isFollowing});
+      this.isFollowing,
+
+
+      });
 
   @override
   // TODO: implement props
@@ -73,6 +82,30 @@ class CompanyDetails extends Equatable {
   @override
   String toString() {
     return 'CompanyDetails{id: $id, user: $user, name: $name, address: $address, email: $email, latitude: $latitude, longitude: $longitude, dealer_image: $dealer_image, avg_rating: $avg_rating, phone: $phone, following: $following, reviews: $reviews, isFollowing: $isFollowing, ratingCount: $ratingCount}';
+  }
+
+  List get starclicked => _starclicked;
+
+  set starclicked(List value) {
+    _starclicked = value;
+  }
+
+  List get starCount => _starCount;
+
+  set starCount(List value) {
+    _starCount = value;
+  }
+
+  List<int> get stars => _stars;
+
+  set stars(List<int> value) {
+    _stars = value;
+  }
+
+  int get roundRating => _roundRating;
+
+  set roundRating(int value) {
+    _roundRating = value;
   }
 }
 

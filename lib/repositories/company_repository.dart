@@ -9,6 +9,8 @@ class CompanyRepository{
 
   Future<CompanyDetails> getCompanyDetails(String id) async{
     final CompanyDetails companyDetails = await companyDetailsApiClient.getCompanyDetails(id);
+
+
     return companyDetails;
   }
 }
