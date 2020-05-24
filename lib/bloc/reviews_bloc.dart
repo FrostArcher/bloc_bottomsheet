@@ -16,23 +16,26 @@ class ReviewsBloc extends Bloc<ReviewsEvent, ReviewsState>{
 
   @override
   Stream<ReviewsState> mapEventToState(ReviewsEvent event) async*{
+
+    var reviewsInitialized = false;
+
     // TODO: implement mapEventToState
     if(state is ReviewsUninitialized){
+      reviewsInitialized = true;
       yield ReviewsLoading();
     }
     if(event is FetchReviews && !_hasReachedMax(state)){
       try{
-        if(state is ReviewsLoading){
+        if(state is ReviewsLoading && reviewsInitialized){
           final reviews = await reviewsRepository.getReviews(event.id,event.next);
           yield ReviewsLoaded(reviews: reviews,hasMaxReached: false);
+          (state as ReviewsLoaded).results.clear();
+          (state as ReviewsLoaded).results.addAll(reviews.results);
         }
-        if(state is ReviewsLoaded){
+        if(state is ReviewsLoaded && !reviewsInitialized){
           final reviews = await reviewsRepository.getReviews(event.id, event.next);
-          yield reviews.next==null? (state as ReviewsLoaded).copyWith(hasMaxReached:true):ReviewsLoaded(
-            reviews: reviews,
-            results: (state as ReviewsLoaded).results??<Results>[]+reviews.results,
-            hasMaxReached: false
-          );
+          (state as ReviewsLoaded).results.addAll(reviews.results);
+          yield ReviewsLoaded(reviews: reviews,hasMaxReached: false);
         }
       }catch(e){
         print("checkreviewerror${e}");

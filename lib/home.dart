@@ -513,12 +513,14 @@ class Home extends StatelessWidget {
                               );
                             }
                             else if(state is ReviewsLoaded){
+                              var results = state.results.isEmpty?state.reviews.results:state.results;
+                              print("$results");
                               return Column(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   Column(
                                     children:
-                                      state.results.map((reviewsResult) {
+                                      results.map((reviewsResult) {
                                         return Container(
                                           margin: EdgeInsets.symmetric(horizontal: 30),
                                           child: Column(

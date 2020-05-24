@@ -10,27 +10,35 @@ abstract class ReviewsState extends Equatable{
   List<Object> get props => [];
 }
 
-class ReviewsUninitialized extends ReviewsState{}
+class ReviewsUninitialized extends ReviewsState{
 
-class ReviewsLoading extends ReviewsState{}
+}
+
+class ReviewsLoading extends ReviewsState{
+}
 
 class ReviewsLoaded extends  ReviewsState{
   final Reviews reviews;
-  final List<Results> results;
+  static List<Results> _results = <Results>[];
   final bool hasMaxReached;
 
-  ReviewsLoaded({@ required this.reviews,this.hasMaxReached, this.results}):super([reviews,results,hasMaxReached]);
+  ReviewsLoaded({@ required this.reviews,this.hasMaxReached}):super([reviews,hasMaxReached]);
 
   ReviewsLoaded copyWith({List<Results> resultList, bool hasMaxReached}){
     return ReviewsLoaded(
       reviews: this.reviews,
-      results: resultList ?? this.reviews.results,
       hasMaxReached: hasMaxReached ?? this.hasMaxReached
     );
   }
 
   @override
   List<Object> get props => [reviews];
+
+  List<Results> get results => _results;
+
+  set results(List<Results> value) {
+    _results = value;
+  }
 }
 
 class ReviewsEmpty extends ReviewsState{}
