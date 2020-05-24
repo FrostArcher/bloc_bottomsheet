@@ -1,13 +1,19 @@
 import 'package:blocbottomsheet/bloc/company_bloc.dart';
+import 'package:blocbottomsheet/bloc/reviews.event.dart';
+import 'package:blocbottomsheet/bloc/reviews_bloc.dart';
+import 'package:blocbottomsheet/bloc/reviews_state.dart';
 import 'package:blocbottomsheet/models/company_details.dart';
+import 'package:blocbottomsheet/repositories/repositories.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:http/http.dart' as http;
 
 import 'bloc/blocs.dart';
 
 class Home extends StatelessWidget {
   TextEditingController textEditingController = new TextEditingController();
+  int _page=1;
 
   @override
   Widget build(BuildContext context) {
@@ -37,8 +43,8 @@ class Home extends StatelessWidget {
                     ),
                     onSubmitted: (text) async {
                       if (text != null) {
-                        BlocProvider.of<CompanyBloc>(context)
-                            .add(FetchCompany(id: text));
+                          BlocProvider.of<CompanyBloc>(context)
+                              .add(FetchCompany(id: text));
                       }
                     },
                   ),
@@ -71,6 +77,11 @@ class Home extends StatelessWidget {
                 }
                 if (state is CompanyLoaded) {
                   final companyDetails = state.companyDetails;
+                  final ReviewsRepository reviewsRepository = ReviewsRepository(
+                    companyDetailsApiClient: CompanyDetailsApiClient(
+                      httpClient: http.Client(),
+                    ),
+                  );
                   var listCount = 6;
                   var starCountClick = 6;
                   return ListView(
@@ -471,72 +482,125 @@ class Home extends StatelessWidget {
                               color: Colors.black, fontWeight: FontWeight.bold),
                         ),
                       ),
-                      Column(
-                        children: [1, 2, 3, 4]
-                            .map((e) => Container(
-                                  margin: EdgeInsets.symmetric(horizontal: 30),
-                                  child: Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Row(
-                                        children: [
-                                          Expanded(
-                                            child: Row(
-                                              children: [1, 2, 3, 4, 5]
-                                                  .map((e) => Icon(
+                      BlocProvider(
+                        create: (context) => ReviewsBloc(reviewsRepository: reviewsRepository),
+                        child: BlocBuilder<ReviewsBloc, ReviewsState>(
+                          builder: (context, state){
+                            if(state is ReviewsUninitialized){
+                              return RaisedButton(
+                                onPressed: (){
+                                  BlocProvider.of<ReviewsBloc>(context).add(
+                                      FetchReviews(id: companyDetails.id.toString(), next: null));
+                                },
+                                child: Text("See Reviews"),
+                              );
+                            }
+                            else if (state is ReviewsEmpty){
+                              return Container(
+                                alignment: Alignment.center,
+                                child: Text("No Reviews Yet"),
+                              );
+                            }
+                            else if(state is ReviewsLoading){
+                              return Container(
+                                alignment: Alignment.center,
+                                child: SizedBox(
+                                  width: 50,
+                                  height: 50,
+                                  child: CircularProgressIndicator(
+                                  ),
+                                ),
+                              );
+                            }
+                            else if(state is ReviewsLoaded){
+                              return Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Column(
+                                    children:
+                                      state.results.map((reviewsResult) {
+                                        return Container(
+                                          margin: EdgeInsets.symmetric(horizontal: 30),
+                                          child: Column(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              Row(
+                                                children: [
+                                                  Expanded(
+                                                    child: Row(
+                                                      children: [1, 2, 3, 4, 5]
+                                                          .map((e) => Icon(
                                                         Icons.star,
                                                         size: 10,
                                                       ))
-                                                  .toList(),
-                                            ),
-                                          ),
-                                          Text(
-                                            "Very Good!",
-                                            style: TextStyle(
-                                              color: Colors.black,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      Text(
-                                        "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in",
-                                        textAlign: TextAlign.justify,
-                                        style: TextStyle(color: Colors.black38),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.symmetric(vertical:8.0),
-                                        child: Row(
-                                          children: [
-                                            CircleAvatar(
-                                              minRadius: 5,
-                                              maxRadius: 8,
-                                              child: ClipRRect(
-                                                borderRadius: BorderRadius.circular(30),
-                                                child: Image.network(
-                                                    "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=334&q=80",
-                                                  fit: BoxFit.cover,
-                                                ),
-                                              ),
-                                            ),
-                                            Expanded(
-                                              child: Padding(
-                                                padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                                                child: Text(
-                                                  "Reviewer Name",
-                                                  style: TextStyle(
-                                                    color: Colors.black38,
+                                                          .toList(),
+                                                    ),
                                                   ),
+                                                  Text(
+                                                    "${reviewsResult.comment}",
+                                                    style: TextStyle(
+                                                      color: Colors.black,
+                                                      fontWeight: FontWeight.bold,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                              Text(
+                                                "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in",
+                                                textAlign: TextAlign.justify,
+                                                style: TextStyle(color: Colors.black38),
+                                              ),
+                                              Padding(
+                                                padding: const EdgeInsets.symmetric(vertical:8.0),
+                                                child: Row(
+                                                  children: [
+                                                    CircleAvatar(
+                                                      minRadius: 5,
+                                                      maxRadius: 8,
+                                                      child: ClipRRect(
+                                                        borderRadius: BorderRadius.circular(30),
+                                                        child: Image.network(
+                                                          "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=334&q=80",
+                                                          fit: BoxFit.cover,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    Expanded(
+                                                      child: Padding(
+                                                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                                                        child: Text(
+                                                          "Reviewer Name",
+                                                          style: TextStyle(
+                                                            color: Colors.black38,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    )
+                                                  ],
                                                 ),
                                               ),
-                                            )
-                                          ],
-                                        ),
-                                      ),
-                                    ],
+                                            ],
+                                          ),
+                                        );
+                                      }).toList(),
                                   ),
-                                ))
-                            .toList(),
+                                  state.reviews.next!=null?RaisedButton(
+                                    child: Text("See more reviews"),
+                                    onPressed: (){
+                                      BlocProvider.of<ReviewsBloc>(context).add(
+                                          FetchReviews(id: companyDetails.id.toString(), next: state.reviews.next));
+                                    },
+                                  ):SizedBox.shrink()
+                                ],
+                              );
+                            }
+                            else{
+                              return Container(
+                                child: Text("Error Loading Reviews"),
+                              );
+                            }
+                          },
+                        ),
                       ),
                     ],
                   );

@@ -133,3 +133,49 @@ class RatingCount{
     return 'RatingCount{oneStar: $oneStar, twoStar: $twoStar, threeStar: $threeStar, fourStar: $fourStar, fiveStar: $fiveStar}';
   }
 }
+
+class Reviews{
+  final int count;
+  final String next;
+  final String previous;
+  final List<Results> results;
+
+  Reviews({this.count, this.next, this.previous, this.results});
+
+  factory Reviews.fromjson(Map<String,dynamic> str){
+    return Reviews(
+      count: str["count"],
+      next: str["next"],
+      previous: str["previous"],
+      results: str["results"].map<Results>((item)=> Results.fromJson(item)).toList(),
+    );
+  }
+
+  @override
+  String toString() {
+    return 'Reviews{count: $count, next: $next, previous: $previous, results: $results}';
+  }
+}
+
+class Results{
+  final int id;
+  final String comment;
+  final String rating;
+  final String username;
+
+  const Results({this.id, this.comment, this.rating, this.username});
+
+  factory Results.fromJson(Map<String,dynamic> str){
+    return Results(
+      id: str["id"],
+      comment: str["comment"],
+      rating: str["rating"],
+      username: str["username"],
+    );
+  }
+
+  @override
+  String toString() {
+    return 'Results{id: $id, comment: $comment, rating: $rating, username: $username}';
+  }
+}

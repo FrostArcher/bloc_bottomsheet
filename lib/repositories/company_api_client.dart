@@ -29,6 +29,43 @@ class CompanyDetailsApiClient {
       print("$e");
     }
   }
+
+  Future<Reviews> getReviews(String id, String page) async{
+    if(page==null)
+      {
+        final reviewsUrl = "$baseUrl/company/reviews/$id/";
+        final response = await this.httpClient.get(reviewsUrl);
+        if(response.statusCode!=200){
+          throw Exception('error getting company reviews');
+        }
+        try{
+          final responseJson = jsonDecode(response.body);
+          var reviews = Reviews.fromjson(responseJson);
+          print("${reviews.toString()}");
+          return reviews;
+
+        }catch(e){
+          print("reviewserr$e");
+        }
+      }
+    else{
+      final reviewsUrl = "$page";
+      final response = await this.httpClient.get(reviewsUrl);
+      if(response.statusCode!=200){
+        throw Exception('error getting company reviews');
+      }
+      try{
+        final responseJson = jsonDecode(response.body);
+        var reviews = Reviews.fromjson(responseJson);
+        print("${reviews.toString()}");
+        return reviews;
+      }catch(e){
+        print("reviewserr$e");
+      }
+    }
+
+
+  }
 }
 
 

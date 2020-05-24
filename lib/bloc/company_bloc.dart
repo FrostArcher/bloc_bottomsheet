@@ -69,5 +69,6 @@ class CompanyBloc extends Bloc<CompanyEvent, CompanyState>{
       }
 
     }
+    else yield CompanyEmpty();
   }
 }
